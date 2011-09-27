@@ -15,73 +15,40 @@ namespace PostSharp.NotifyPropertyChanged
     [MulticastAttributeUsage(MulticastTargets.Class, Inheritance = MulticastInheritance.Multicast)]
     public sealed class NotifyPropertyChangedAttribute : InstanceLevelAspect, INotifyPropertyChanged
     {
+        public Dictionary<string, HashSet<string>> PropertyDependecyMap;
+
+        public IEnumerable<string> DependenciesFor(string property)
+        {
+            HashSet<string> dependencies;
+            if (PropertyDependecyMap.TryGetValue(property, out dependencies))
+                foreach (var dependency in dependencies)
+                    yield return dependency;
+
+            yield return property;
+        }
+
         public override void CompileTimeInitialize(Type type, AspectInfo aspectInfo)
         {
             base.CompileTimeInitialize(type, aspectInfo);
 
-            var publicProperties =
-                type.GetProperties()
-                    .Where(property=> property.CanRead && 
-                                      property.GetGetMethod() != null)
-                    .ToArray();
-
-            var directDependencies =
-                from property in publicProperties
-                from dependency in ReflectionSearch.GetMethodsUsingDeclaration(property.GetGetMethod())
-                join dependencyProperty in publicProperties on dependency.UsingMethod equals dependencyProperty.GetGetMethod()
-                let dependentPropertyName = dependencyProperty.Name
-                group dependentPropertyName by property.Name into propertyDependencies
-                select propertyDependencies;
-
-            PropertyDependecies = directDependencies.ToDictionary(dependencies => dependencies.Key, dependencies => new HashSet<string>(dependencies));
-
-            var stack = new Stack<string>();
-            foreach (var dependencies in PropertyDependecies)
-            {
-                var propertyDependencies = dependencies.Value;
-                foreach (var dependency in dependencies.Value)
-                    stack.Push(dependency);
-                while (stack.Count > 0)
-                {
-                    var dependentProperty = stack.Pop();
-                    if (!PropertyDependecies.ContainsKey(dependentProperty))
-                        continue;
-                    var propertiesRead = PropertyDependecies[dependentProperty];
-                    foreach (var property in propertiesRead)
-                    {
-                        if (propertyDependencies.Contains(property))
-                            continue;
-
-                        propertyDependencies.Add(property);
-                        stack.Push(property);
-                    }
-                }
-            }
-        }
-
-        public Dictionary<string, HashSet<string>> PropertyDependecies;
-
-        [ImportMember("OnPropertyChanged", IsRequired = false, Order = ImportMemberOrder.AfterIntroductions)]
-        public Action<string> OnPropertyChangedMethod;
-
-        [IntroduceMember(Visibility = Visibility.Family, IsVirtual = true, OverrideAction = MemberOverrideAction.OverrideOrIgnore)]
-        public void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this.Instance, new PropertyChangedEventArgs(propertyName));
+            PropertyDependecyMap = new PropertyDependency().MapFor(type);
         }
 
         [IntroduceMember(OverrideAction = MemberOverrideAction.OverrideOrIgnore)]
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private IEnumerable<string> _DependenciesFor(string property)
+        [IntroduceMember(Visibility = Visibility.Family, IsVirtual = true, OverrideAction = MemberOverrideAction.OverrideOrIgnore)]
+        public void OnPropertyChanged(string propertyName)
         {
-            HashSet<string> dependencies;
-            if (PropertyDependecies.TryGetValue(property, out dependencies))
-                foreach (var dependency in dependencies)
-                    yield return dependency;
-            yield return property;
+            if (PropertyChanged != null)
+                PropertyChanged(Instance, new PropertyChangedEventArgs(propertyName));
         }
+
+        [ImportMember("OnPropertyChanged", IsRequired = false, Order = ImportMemberOrder.AfterIntroductions)]
+        public Action<string> OnPropertyChangedMethod;
+
+        public int NumberOfPublicMethodsExecuting { get; set; }
+        public HashSet<string> PropertiesThatHaveChanged { get; set; }
 
         [OnLocationSetValueAdvice, MulticastPointcut(Targets = MulticastTargets.Property, Attributes = MulticastAttributes.Public | MulticastAttributes.Instance | MulticastAttributes.NonAbstract)]
         public void OnPropertySet(LocationInterceptionArgs args)
@@ -90,16 +57,16 @@ namespace PostSharp.NotifyPropertyChanged
                 return;
 
             args.ProceedSetValue();
-            foreach (var dependency in _DependenciesFor(args.LocationName))
+
+            foreach (var dependency in DependenciesFor(args.LocationName))
+            {
                 if (NumberOfPublicMethodsExecuting > 0)
                     PropertiesThatHaveChanged.Add(dependency);
                 else
                     OnPropertyChangedMethod(dependency);
+            }
 
         }
-
-        public HashSet<string> PropertiesThatHaveChanged { get; set; }
-        public int NumberOfPublicMethodsExecuting { get; set; }
 
         static public IEnumerable<MethodInfo> PublicInstanceMethods(Type target)
         {
@@ -113,9 +80,8 @@ namespace PostSharp.NotifyPropertyChanged
         public void OnMethodEntry(MethodExecutionArgs args)
         {
             NumberOfPublicMethodsExecuting++;
-            if (NumberOfPublicMethodsExecuting == 1)
-                if (PropertiesThatHaveChanged == null)
-                    PropertiesThatHaveChanged = new HashSet<string>();
+            if (NumberOfPublicMethodsExecuting == 1 && PropertiesThatHaveChanged == null)
+                PropertiesThatHaveChanged = new HashSet<string>();
         }
 
         [OnMethodExitAdvice(Master = "OnMethodEntry")]
@@ -124,10 +90,10 @@ namespace PostSharp.NotifyPropertyChanged
             NumberOfPublicMethodsExecuting--;
             if (NumberOfPublicMethodsExecuting == 0 && PropertiesThatHaveChanged.Count > 0)
             {
-                foreach(var propertyName in PropertiesThatHaveChanged)
+                foreach (var propertyName in PropertiesThatHaveChanged)
                     OnPropertyChangedMethod(propertyName);
                 PropertiesThatHaveChanged.Clear();
-           }
+            }
         }
     }
 }
