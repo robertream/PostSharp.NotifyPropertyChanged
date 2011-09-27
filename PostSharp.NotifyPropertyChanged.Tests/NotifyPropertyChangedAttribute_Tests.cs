@@ -1,13 +1,7 @@
-﻿using System.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using PostSharp.Aspects;
-using PostSharp.Reflection;
 using System.Collections.Generic;
-using System;
-using PostSharp.Extensibility;
 
 namespace PostSharp.NotifyPropertyChanged.Tests
 {

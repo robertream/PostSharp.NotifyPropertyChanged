@@ -7,7 +7,6 @@ using PostSharp.Aspects.Advices;
 using PostSharp.Extensibility;
 using PostSharp.Reflection;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace PostSharp.NotifyPropertyChanged
 {
