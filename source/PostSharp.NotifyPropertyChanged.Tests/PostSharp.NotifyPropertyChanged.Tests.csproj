@@ -34,24 +34,27 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.5.10.11092\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\..\packages\NUnit.2.5.10.11092\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PostSharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.2.1.4.1\lib\net20\PostSharp.dll</HintPath>
+      <HintPath>..\..\packages\PostSharp.2.1.4.1\lib\net20\PostSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NUnitAssertionExtensions.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_MoreThanOnceInTheSamePublicMethod.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_a_PropertyWithBackingField.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_that_has_a_NestedDependentProperty.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_that_has_a_DependentProperty.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\PublicInstanceMethods.cs" />
-    <Compile Include="NUnitAssertionExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyDependency\When_I_create_a_PropertyDependencyMapFrom_a_simple_cyclic_PropertyDependencyGraph.cs" />
     <Compile Include="PropertyDependency\When_I_create_a_PropertyDependencyMapFrom_a_simple_acyclic_PropertyDependencyGraph_with_a_dependent_property_that_is_not_in_the_map.cs" />
     <Compile Include="PropertyDependency\When_I_create_a_PropertyDependencyMapFrom_a_simple_acyclic_PropertyDependencyGraph.cs" />
@@ -67,7 +70,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\PostSharp.2.1.4.1\tools\PostSharp.targets" />
+  <Import Project="..\..\packages\PostSharp.2.1.4.1\tools\PostSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

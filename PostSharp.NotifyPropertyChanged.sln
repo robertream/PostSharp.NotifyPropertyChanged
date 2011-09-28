@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostSharp.NotifyPropertyChanged", "PostSharp.NotifyPropertyChanged\PostSharp.NotifyPropertyChanged.csproj", "{8A9AE777-F113-4DFE-A448-3F575E0D5E31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostSharp.NotifyPropertyChanged", "source\PostSharp.NotifyPropertyChanged\PostSharp.NotifyPropertyChanged.csproj", "{8A9AE777-F113-4DFE-A448-3F575E0D5E31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostSharp.NotifyPropertyChanged.Tests", "PostSharp.NotifyPropertyChanged.Tests\PostSharp.NotifyPropertyChanged.Tests.csproj", "{B973FF7B-8322-4047-9639-BDB309F23F01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostSharp.NotifyPropertyChanged.Tests", "source\PostSharp.NotifyPropertyChanged.Tests\PostSharp.NotifyPropertyChanged.Tests.csproj", "{B973FF7B-8322-4047-9639-BDB309F23F01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
