@@ -5,6 +5,7 @@ properties {
 }
 
 task package -depends test {
+	New-Item -Path $base_dir -Name releases -Type directory -Force
 	Push-Location "$source_dir\PostSharp.NotifyPropertyChanged"
 	& $nuget pack .\PostSharp.NotifyPropertyChanged.csproj -Sym -Properties Configuration=Release -Version $version -OutputDirectory $nuget_pub_dir
 	Pop-Location
