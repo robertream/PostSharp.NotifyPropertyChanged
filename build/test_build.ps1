@@ -1,15 +1,14 @@
-properties
-{
-	$test_dir = "$source_dir\PostSharp.NotifyPropertyChanged\bin\Release"
+properties {
+	$base_dir = Resolve-Path ..\
+	$source_dir = "$base_dir\source"
+	$test_dir = "$source_dir\PostSharp.NotifyPropertyChanged.Tests\bin\Release"
 	$tests = @('PostSharp.NotifyPropertyChanged.Tests.dll') 
-	$nunit_dir = Get-ChildItem "$base_dir\packages\NUnit.*" | Sort-Object Name | Select-Object -First 1
-	$nunit = "$nunit_dir\Tools\nunit-console-x86.exe"
+	$nunit_dir = (Get-ChildItem "$base_dir\packages\NUnit.*" | Sort-Object Name | Select-Object -First 1).FullName
+	$nunit = "$nunit_dir\tools\nunit-console-x86.exe"
 }
 
-task test -depends compile
-{
-	if ($tests.Length -le 0)
-	{ 
+task test -depends compile {
+	if ($tests.Length -le 0) { 
 		Write-Host -ForegroundColor Red 'No tests defined'
 		return 
 	}
@@ -18,8 +17,7 @@ task test -depends compile
 
 	& $nunit $test_assemblies /noshadow
 
-	if($lastExitCode -ne 0)
-	{
+	if($lastExitCode -ne 0) {
 		throw "Tests Failed."
 	}
 
