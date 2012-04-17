@@ -3,7 +3,7 @@ properties {
 	$source_dir = "$base_dir\source"
 	$test_dir = "$source_dir\PostSharp.NotifyPropertyChanged.Tests\bin\Release"
 	$tests = @('PostSharp.NotifyPropertyChanged.Tests.dll') 
-	$nunit_dir = (Get-ChildItem "$base_dir\packages\NUnit.*" | Sort-Object Name | Select-Object -First 1).FullName
+	$nunit_dir = (Get-ChildItem "$base_dir\packages\NUnit.Runners.*" | Sort-Object Name | Select-Object -First 1).FullName
 	$nunit = "$nunit_dir\tools\nunit-console-x86.exe"
 }
 
