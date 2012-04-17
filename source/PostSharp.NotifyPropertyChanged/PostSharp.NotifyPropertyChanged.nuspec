@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/robertream/PostSharp.NotifyPropertyChanged</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2012</copyright>
+    <tags>PostSharp ILWeaving INotifyPropertyChanged DataBinding MVVM WPF Silverlight WP7 WindowsPhone</tags>
+    <dependencies>
+      <dependency id="PostSharp" version="[2.1.4.1]" />
+    </dependencies>
+  </metadata>
+</package>
