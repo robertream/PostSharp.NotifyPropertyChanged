@@ -31,7 +31,7 @@ namespace PostSharp.NotifyPropertyChanged
         {
             base.CompileTimeInitialize(type, aspectInfo);
 
-            PropertyDependecyMap = new PropertyDependency().MapFor(type);
+            PropertyDependecyMap = PropertyDependency.MapFor(type);
         }
 
         [IntroduceMember(OverrideAction = MemberOverrideAction.OverrideOrIgnore)]

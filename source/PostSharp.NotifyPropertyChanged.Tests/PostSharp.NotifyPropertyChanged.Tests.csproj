@@ -55,9 +55,9 @@
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_that_has_a_DependentProperty.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty.cs" />
     <Compile Include="NotifyPropertyChangedAttribute\PublicInstanceMethods.cs" />
-    <Compile Include="PropertyDependency\When_I_create_a_PropertyDependencyMapFrom_a_simple_cyclic_PropertyDependencyGraph.cs" />
-    <Compile Include="PropertyDependency\When_I_create_a_PropertyDependencyMapFrom_a_simple_acyclic_PropertyDependencyGraph_with_a_dependent_property_that_is_not_in_the_map.cs" />
-    <Compile Include="PropertyDependency\When_I_create_a_PropertyDependencyMapFrom_a_simple_acyclic_PropertyDependencyGraph.cs" />
+    <Compile Include="PropertyDependency\MapFrom_a_simple_cyclic_PropertyDependencyGraph.cs" />
+    <Compile Include="PropertyDependency\MapFrom_a_simple_acyclic_PropertyDependencyGraph_with_a_dependent_property_that_is_not_in_the_map.cs" />
+    <Compile Include="PropertyDependency\MapFrom_a_simple_acyclic_PropertyDependencyGraph.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

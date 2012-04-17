@@ -9,7 +9,7 @@ namespace PostSharp.NotifyPropertyChanged.Tests
     public static partial class PropertyDependency_Tests
     {
         [Test]
-        public static void When_I_create_a_PropertyDependencyMapFrom_a_simple_cyclic_PropertyDependencyGraph()
+        public static void MapFrom_a_simple_cyclic_PropertyDependencyGraph()
         {
             var simpleAcyclicGraph =
                 new Dictionary<string, HashSet<string>>
@@ -19,9 +19,9 @@ namespace PostSharp.NotifyPropertyChanged.Tests
                         {"property C", new HashSet<string> {"property B"}},
                     };
 
-            var actualMap = new PropertyDependency().MapFrom(simpleAcyclicGraph);
+            var actualMap = PropertyDependency.MapFrom(simpleAcyclicGraph);
 
-            "it should return all the other properties in the cycle for all properties in the cyclic graph"
+            "should return all the other properties in the cycle for all properties in the cyclic graph"
                 .AssertThat(actualMap["property A"].ToArray(), Is.EquivalentTo(new[] {"property B", "property C"}))
                 .AssertThat(actualMap["property B"].ToArray(), Is.EquivalentTo(new[] {"property A", "property C"}))
                 .AssertThat(actualMap["property C"].ToArray(), Is.EquivalentTo(new[] {"property A", "property B"}));
