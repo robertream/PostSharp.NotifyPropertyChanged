@@ -12,7 +12,7 @@
     <copyright>Copyright 2012</copyright>
     <tags>PostSharp ILWeaving INotifyPropertyChanged DataBinding MVVM WPF Silverlight WP7 WindowsPhone</tags>
     <dependencies>
-      <dependency id="PostSharp" version="[2.1.4.1]" />
+      <dependency id="PostSharp" version="2.1" />
     </dependencies>
   </metadata>
 </package>
