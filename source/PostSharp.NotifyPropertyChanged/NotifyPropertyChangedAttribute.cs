@@ -15,23 +15,11 @@ namespace PostSharp.NotifyPropertyChanged
     [MulticastAttributeUsage(MulticastTargets.Class, Inheritance = MulticastInheritance.Multicast)]
     public sealed class NotifyPropertyChangedAttribute : InstanceLevelAspect, INotifyPropertyChanged
     {
-        public Dictionary<string, HashSet<string>> PropertyDependecyMap;
-
-        public IEnumerable<string> DependenciesFor(string property)
-        {
-            HashSet<string> dependencies;
-            if (PropertyDependecyMap.TryGetValue(property, out dependencies))
-                foreach (var dependency in dependencies)
-                    yield return dependency;
-
-            yield return property;
-        }
-
         public override void CompileTimeInitialize(Type type, AspectInfo aspectInfo)
         {
             base.CompileTimeInitialize(type, aspectInfo);
 
-            PropertyDependecyMap = PropertyDependency.MapFor(type);
+            PropertyDependecyMap = PropertyDependencyMap.For(type);
         }
 
         [IntroduceMember(OverrideAction = MemberOverrideAction.OverrideOrIgnore)]
@@ -47,8 +35,18 @@ namespace PostSharp.NotifyPropertyChanged
         [ImportMember("OnPropertyChanged", IsRequired = false, Order = ImportMemberOrder.AfterIntroductions)]
         public Action<string> OnPropertyChangedMethod;
 
+        public Dictionary<string, HashSet<string>> PropertyDependecyMap;
         public int NumberOfPublicMethodsExecuting { get; set; }
         public HashSet<string> PropertiesThatHaveChanged { get; set; }
+
+        public IEnumerable<string> DependenciesFor(string property)
+        {
+            HashSet<string> dependencies;
+            if (PropertyDependecyMap.TryGetValue(property, out dependencies))
+                foreach (var dependency in dependencies)
+                    yield return dependency;
+            yield return property;
+        }
 
         [OnLocationSetValueAdvice, MulticastPointcut(Targets = MulticastTargets.Property, Attributes = MulticastAttributes.Public | MulticastAttributes.Instance | MulticastAttributes.NonAbstract)]
         public void OnPropertySet(LocationInterceptionArgs args)
@@ -68,7 +66,7 @@ namespace PostSharp.NotifyPropertyChanged
 
         }
 
-        static public IEnumerable<MethodInfo> PublicInstanceMethods(Type target)
+        public IEnumerable<MethodInfo> PublicInstanceMethods(Type target)
         {
             return from method in target.GetMethods(BindingFlags.Public | BindingFlags.Instance)
                    where method.DeclaringType != typeof(object)

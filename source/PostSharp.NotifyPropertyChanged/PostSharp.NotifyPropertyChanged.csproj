@@ -45,7 +45,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NotifyPropertyChangedAttribute.cs" />
-    <Compile Include="PropertyDependency.cs" />
+    <Compile Include="PropertyDependencyMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

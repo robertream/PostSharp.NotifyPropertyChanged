@@ -3,7 +3,6 @@ using System.ComponentModel;
 using NUnit.Framework;
 
 // ReSharper disable InconsistentNaming
-// ReSharper disable CheckNamespace
 namespace PostSharp.NotifyPropertyChanged.Tests
 {
     public static partial class NotifyPropertyChangedAttribute_Tests

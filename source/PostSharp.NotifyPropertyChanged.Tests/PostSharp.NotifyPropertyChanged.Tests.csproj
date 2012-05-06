@@ -47,17 +47,16 @@
     <Compile Include="..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_a_NonPublicAutoProperty.cs" />
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_an_AutoProperty_that_has_a_CalculatedProperty_from_a_DependentMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NUnitAssertionExtensions.cs" />
-    <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_MoreThanOnceInTheSamePublicMethod.cs" />
-    <Compile Include="NotifyPropertyChangedAttribute\When_I_set_a_PropertyWithBackingField.cs" />
-    <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_that_has_a_NestedDependentProperty.cs" />
-    <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty_that_has_a_DependentProperty.cs" />
-    <Compile Include="NotifyPropertyChangedAttribute\When_I_set_an_AutoProperty.cs" />
-    <Compile Include="NotifyPropertyChangedAttribute\PublicInstanceMethods.cs" />
-    <Compile Include="PropertyDependency\MapFrom_a_simple_cyclic_PropertyDependencyGraph.cs" />
-    <Compile Include="PropertyDependency\MapFrom_a_simple_acyclic_PropertyDependencyGraph_with_a_dependent_property_that_is_not_in_the_map.cs" />
-    <Compile Include="PropertyDependency\MapFrom_a_simple_acyclic_PropertyDependencyGraph.cs" />
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_an_AutoProperty_MoreThanOnceInTheSamePublicMethod.cs" />
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_a_PropertyWithBackingField.cs" />
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_an_AutoProperty_that_has_a_NestedDependentProperty.cs" />
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_an_AutoProperty_that_has_a_DependentProperty.cs" />
+    <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_an_AutoProperty.cs" />
+    <Compile Include="PropertyDependencyMap_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
