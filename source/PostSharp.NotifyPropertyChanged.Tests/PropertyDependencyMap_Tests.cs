@@ -8,28 +8,28 @@ namespace PostSharp.NotifyPropertyChanged.Tests
     public static partial class PropertyDependencyMap_Tests
     {
         [Test]
-        public static void When_I_FindAllReachableMethodsIn_a_cyclic_MethodDependencyGraph()
+        public static void When_I_FindAllReachableNodes_in_a_cyclic_Graph()
         {
-            var methodDependencyGraph =
+            var graph =
                 new Dictionary<string, HashSet<string>>
                     {
-                        {"method A", new HashSet<string> {"method C"}},
-                        {"method B", new HashSet<string> {"method A"}},
-                        {"method C", new HashSet<string> {"method B"}},
+                        {"node A", new HashSet<string> {"node C"}},
+                        {"node B", new HashSet<string> {"node A"}},
+                        {"node C", new HashSet<string> {"node B"}},
                     };
 
-            var reachableMethodsFor = PropertyDependencyMap.FindAllReachableMethodsIn(methodDependencyGraph);
+            var reachableNodessFor = graph.FindAllReachableNodes();
 
-            "should return all the other methods in the cycle for all methods in the cyclic graph"
-                .AssertThat(reachableMethodsFor["method A"].ToArray(), Is.EquivalentTo(new[] { "method B", "method C" }))
-                .AssertThat(reachableMethodsFor["method B"].ToArray(), Is.EquivalentTo(new[] { "method A", "method C" }))
-                .AssertThat(reachableMethodsFor["method C"].ToArray(), Is.EquivalentTo(new[] { "method A", "method B" }));
+            "should return all the other nodes in the cycle for all nodes in the cyclic Graph"
+                .AssertThat(reachableNodessFor["node A"].ToArray(), Is.EquivalentTo(new[] { "node B", "node C" }))
+                .AssertThat(reachableNodessFor["node B"].ToArray(), Is.EquivalentTo(new[] { "node A", "node C" }))
+                .AssertThat(reachableNodessFor["node C"].ToArray(), Is.EquivalentTo(new[] { "node A", "node B" }));
         }
 
         [Test]
-        public static void When_I_FindAllReachableMethods_an_acyclic_MethodDependencyGraph()
+        public static void When_I_FindAllReachableNodes_in_an_acyclic_Graph()
         {
-            var methodDependencyGraph =
+            var graph =
                 new Dictionary<string, HashSet<string>>
                     {
                         {"grand parent", new HashSet<string> {"parent"}},
@@ -37,46 +37,23 @@ namespace PostSharp.NotifyPropertyChanged.Tests
                         {"child", new HashSet<string>()},
                     };
 
-            var reachableMethodsFor = PropertyDependencyMap.FindAllReachableMethodsIn(methodDependencyGraph);
+            var reachableNodessFor = graph.FindAllReachableNodes();
 
-            "it should return a map of the direct AND indirect dependencies for all methods in the graph"
-                .AssertThat(reachableMethodsFor["child"].ToArray(), Is.EquivalentTo(new string[0]))
-                .AssertThat(reachableMethodsFor["parent"].ToArray(), Is.EquivalentTo(new[] {"child"}))
-                .AssertThat(reachableMethodsFor["grand parent"].ToArray(), Is.EquivalentTo(new[] {"parent", "child"}));
+            "it should return a map of the direct AND indirect dependencies for all nodes in the Graph"
+                .AssertThat(reachableNodessFor["child"].ToArray(), Is.EquivalentTo(new string[0]))
+                .AssertThat(reachableNodessFor["parent"].ToArray(), Is.EquivalentTo(new[] { "child" }))
+                .AssertThat(reachableNodessFor["grand parent"].ToArray(), Is.EquivalentTo(new[] { "parent", "child" }));
         }
 
         [Test]
-        public static void When_I_FindAllReachableMethodsIn_an_acyclic_MethodDependencyGraph()
+        public static void When_I_FindAllReachableNodes_in_a_Graph_with_an_node_that_is_not_in_the_Graph()
         {
-            var methodDependencyGraph =
-                new Dictionary<string, HashSet<string>>
-                    {
-                        {"grand parent", new HashSet<string> {"parent"}},
-                        {"parent", new HashSet<string> {"child"}},
-                        {"child", new HashSet<string>()},
-                    };
+            var graph = new Dictionary<string, HashSet<string>> { {"parent", new HashSet<string> {"child"}}, };
 
-            var reachableMethodsFor = PropertyDependencyMap.FindAllReachableMethodsIn(methodDependencyGraph);
+            var reachableNodessFor = graph.FindAllReachableNodes();
 
-            "it should return a map of the direct AND indirect dependencies for all methods in the graph"
-                .AssertThat(reachableMethodsFor["child"].ToArray(), Is.EquivalentTo(new string[0]))
-                .AssertThat(reachableMethodsFor["parent"].ToArray(), Is.EquivalentTo(new[] { "child" }))
-                .AssertThat(reachableMethodsFor["grand parent"].ToArray(), Is.EquivalentTo(new[] { "parent", "child" }));
-        }
-
-        [Test]
-        public static void When_I_FindAllReachableMethodsIn_a_MethodDependencyGraph_with_an_dependent_method_that_is_not_in_the_graph()
-        {
-            var methodDependencyGraph =
-                new Dictionary<string, HashSet<string>>
-                    {
-                        {"parent", new HashSet<string> {"child"}},
-                    };
-
-            var reachableMethodsFor = PropertyDependencyMap.FindAllReachableMethodsIn(methodDependencyGraph);
-
-            "it should only return dependencies for the methods in the property dependency graph"
-                .AssertThat(reachableMethodsFor["parent"].ToArray(), Is.EquivalentTo(new[] { "child" }));
+            "it should only return reachable nodes for the nodes in the Graph"
+                .AssertThat(reachableNodessFor["parent"].ToArray(), Is.EquivalentTo(new[] { "child" }));
         }
     }
 }

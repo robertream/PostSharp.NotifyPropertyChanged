@@ -43,9 +43,11 @@
     <Compile Include="..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NotifyPropertyChangedAttribute.cs" />
+    <Compile Include="CascadeingAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyDependencyMap.cs" />
+    <Compile Include="ReflectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

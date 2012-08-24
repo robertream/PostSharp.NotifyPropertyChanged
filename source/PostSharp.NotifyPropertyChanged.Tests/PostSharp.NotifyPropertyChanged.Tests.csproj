@@ -47,6 +47,7 @@
     <Compile Include="..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="NotifyPropertyChangedAttribute_Cascading_Tests\When_I_set_an_ObservedProperty_on_a_ObservedClass.cs" />
     <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_a_NonPublicAutoProperty.cs" />
     <Compile Include="NotifyPropertyChangedAttribute_Tests\When_I_set_an_AutoProperty_that_has_a_CalculatedProperty_from_a_DependentMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
