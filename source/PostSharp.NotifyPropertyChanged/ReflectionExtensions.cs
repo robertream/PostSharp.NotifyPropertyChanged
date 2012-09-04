@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Data;
 using PostSharp.Reflection;
 
 namespace PostSharp.NotifyPropertyChanged
@@ -57,9 +58,14 @@ namespace PostSharp.NotifyPropertyChanged
             return instanceMethods.ToDictionary(method => method, method => new HashSet<MethodInfo>(instanceMethods.SelectUsesOf(method)));
         }
 
-        public static Dictionary<MethodInfo, HashSet<MethodInfo>> SelectMethodDependenciesFor(this Type @this)
+        public static Dictionary<MethodInfo, HashSet<MethodInfo>> SelectMethodDependencies(this Type @this)
         {
             return @this.SelectInstanceMethodDependencyGraph().FindAllReachableNodes();
+        }
+
+        public static string GetNotificationName(this PropertyInfo @this)
+        {
+            return (@this.GetIndexParameters().Length > 0) ? Binding.IndexerName : @this.Name;
         }
 
         public static Dictionary<T, HashSet<T>> FindAllReachableNodes<T>(this Dictionary<T, HashSet<T>> @this)

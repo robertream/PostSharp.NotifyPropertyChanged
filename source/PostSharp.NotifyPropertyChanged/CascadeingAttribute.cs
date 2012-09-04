@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -15,25 +16,54 @@ namespace PostSharp.NotifyPropertyChanged
     [MulticastAttributeUsage(MulticastTargets.Class, Inheritance = MulticastInheritance.Multicast)]
     public sealed class CascadeingAttribute : InstanceLevelAspect
     {
+        public string[] ObservedCollections;
+        public Dictionary<string, NotifyCollectionChangedEventHandler> ObservedCollectionHandlers;
+
+        public Dictionary<string, Dictionary<string, string[]>> ObservedPropertyMap;
+        public Dictionary<string, PropertyChangedHandler> ObservedPropertyHandlers;
+
         public override void CompileTimeInitialize(Type type, AspectInfo aspectInfo)
         {
             base.CompileTimeInitialize(type, aspectInfo);
 
-            ObservedPropertyMap = type.SelectInstencePropertiesOf<INotifyPropertyChanged>().ToDictionary(property => property.Name, PropertyDependencyMap.For);
+            ObservedPropertyMap = ObservedViewModelProperties(type).ToDictionary(property => property.Name, PropertyDependencyMap.ForProperty);
+            ObservedCollections = ObservedCollectionProperties(type).Select(property => property.Name).ToArray();
         }
 
         public override void RuntimeInitializeInstance()
         {
             base.RuntimeInitializeInstance();
 
-            ObservedPropertyHandlers = ObservedPropertyMap.ToDictionary(entry => entry.Key, entry => new PropertyChangedHandler { NotifyChangesFor = NotifyChangesForMethod, Map = entry.Value, });
+            ObservedPropertyHandlers = ObservedPropertyMap.ToDictionary(entry => entry.Key, PropertyChangedHandlerForProperty);
+            ObservedCollectionHandlers = ObservedCollections.ToDictionary(propertyName => propertyName, CollectionHandlerForProperty);
         }
 
-        [ImportMember("NotifyChangesFor", IsRequired = true, Order = ImportMemberOrder.AfterIntroductions)]
-        public Action<string> NotifyChangesForMethod;
+        [ImportMember("NotifyChanges", IsRequired = true, Order = ImportMemberOrder.AfterIntroductions)]
+        public Action<string[], bool> NotifyChangesMethod;
 
-        [OnLocationSetValueAdvice, MethodPointcut("ObservedInstanceProperties")]
-        public void OnPropertySet(LocationInterceptionArgs args)
+        [OnLocationSetValueAdvice, MethodPointcut("ObservedCollectionProperties")]
+        public void OnObservedCollectionPropertySet(LocationInterceptionArgs args)
+        {
+            var oldInstance = args.GetCurrentValue() as INotifyCollectionChanged;
+            var newInstance = args.Value as INotifyCollectionChanged;
+            if (oldInstance != null)
+                oldInstance.CollectionChanged -= ObservedCollectionHandlers[args.LocationName];
+            if (newInstance != null)
+                newInstance.CollectionChanged += ObservedCollectionHandlers[args.LocationName];
+        }
+
+        public IEnumerable<PropertyInfo> ObservedCollectionProperties(Type target)
+        {
+            return target.SelectInstencePropertiesOf<INotifyCollectionChanged>();
+        }
+
+        public NotifyCollectionChangedEventHandler CollectionHandlerForProperty(string propertyName)
+        {
+            return (@object, @event) => NotifyChangesMethod.Invoke(new[] { propertyName }, true);
+        }
+
+        [OnLocationSetValueAdvice, MethodPointcut("ObservedViewModelProperties")]
+        public void OnObservedViewModelPropertySet(LocationInterceptionArgs args)
         {
             var oldInstance = args.GetCurrentValue() as INotifyPropertyChanged;
             var newInstance = args.Value as INotifyPropertyChanged;
@@ -43,22 +73,24 @@ namespace PostSharp.NotifyPropertyChanged
                 newInstance.PropertyChanged += ObservedPropertyHandlers[args.LocationName].Invoke;
         }
 
-        public IEnumerable<PropertyInfo> ObservedInstanceProperties(Type target)
+        public IEnumerable<PropertyInfo> ObservedViewModelProperties(Type target)
         {
             return target.SelectInstencePropertiesOf<INotifyPropertyChanged>();
         }
 
-        public Dictionary<string, Dictionary<string, string[]>> ObservedPropertyMap;
-        public Dictionary<string, PropertyChangedHandler> ObservedPropertyHandlers = new Dictionary<string, PropertyChangedHandler>();
+        private PropertyChangedHandler PropertyChangedHandlerForProperty(KeyValuePair<string, Dictionary<string, string[]>> entry)
+        {
+            return new PropertyChangedHandler { NotifyChanges = NotifyChangesMethod, Map = entry.Value, };
+        }
+
         public class PropertyChangedHandler
         {
-            public Action<string> NotifyChangesFor;
+            public Action<string[], bool> NotifyChanges;
             public Dictionary<string, string[]> Map = new Dictionary<string, string[]>();
 
             public void Invoke(object sender, PropertyChangedEventArgs eventArgs)
             {
-                foreach (var propertyName in Map[eventArgs.PropertyName])
-                    NotifyChangesFor(propertyName);
+                NotifyChanges(Map[eventArgs.PropertyName], false);
             }
         }
     }
