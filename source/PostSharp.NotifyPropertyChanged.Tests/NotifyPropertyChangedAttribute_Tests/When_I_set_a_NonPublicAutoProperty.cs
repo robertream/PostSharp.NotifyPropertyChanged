@@ -29,6 +29,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             public static int StaticAutoProperty { get; set; }
             protected int ProtectedAutoProperty { get; set; }
             private int PrivateAutoProperty { get; set; }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

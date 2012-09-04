@@ -31,6 +31,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
                 get { return 2 * BackingField; }
                 set { BackingField = value / 2; }
             }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

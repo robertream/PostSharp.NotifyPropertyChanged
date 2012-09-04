@@ -28,6 +28,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
 
             public decimal ObservedProperty { get; set; }
             public decimal NonObservedProperty { get; set; }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
 
         [NotifyPropertyChanged]
@@ -45,6 +47,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             protected decimal CalculatedProperty { get { return ObservingProperty + 1; } }
             public string NonObservingProperty1 { get { return ObservedReference.ToString(); } }
             public decimal NonObservingProperty2 { get { return NonObservedReference.ObservedProperty; } }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

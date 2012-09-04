@@ -32,6 +32,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
                 AutoProperty = "once";
                 AutoProperty = "twice";
             }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

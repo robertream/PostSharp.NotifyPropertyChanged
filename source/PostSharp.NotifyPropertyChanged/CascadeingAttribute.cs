@@ -12,7 +12,7 @@ using PostSharp.Extensibility;
 namespace PostSharp.NotifyPropertyChanged
 {
     [Serializable]
-    [AspectTypeDependency(AspectDependencyAction.Require, typeof(NotifyPropertyChangedAttribute))]
+    [AspectTypeDependency(AspectDependencyAction.Require, AspectDependencyPosition.After, typeof(NotifyPropertyChangedAttribute))]
     [MulticastAttributeUsage(MulticastTargets.Class, Inheritance = MulticastInheritance.Multicast)]
     public sealed class CascadeingAttribute : InstanceLevelAspect
     {
@@ -41,7 +41,7 @@ namespace PostSharp.NotifyPropertyChanged
         [ImportMember("NotifyChanges", IsRequired = true, Order = ImportMemberOrder.AfterIntroductions)]
         public Action<string[], bool> NotifyChangesMethod;
 
-        [OnLocationSetValueAdvice, MethodPointcut("ObservedCollectionProperties")]
+        [OnLocationSetValueAdvice, AdviceDependency(AspectDependencyAction.Commute, "OnObservedViewModelPropertySet"), MethodPointcut("ObservedCollectionProperties")]
         public void OnObservedCollectionPropertySet(LocationInterceptionArgs args)
         {
             var oldInstance = args.GetCurrentValue() as INotifyCollectionChanged;
@@ -62,7 +62,7 @@ namespace PostSharp.NotifyPropertyChanged
             return (@object, @event) => NotifyChangesMethod.Invoke(new[] { propertyName }, true);
         }
 
-        [OnLocationSetValueAdvice, MethodPointcut("ObservedViewModelProperties")]
+        [OnLocationSetValueAdvice, AdviceDependency(AspectDependencyAction.Commute, "OnObservedCollectionPropertySet"), MethodPointcut("ObservedViewModelProperties")]
         public void OnObservedViewModelPropertySet(LocationInterceptionArgs args)
         {
             var oldInstance = args.GetCurrentValue() as INotifyPropertyChanged;
@@ -75,7 +75,7 @@ namespace PostSharp.NotifyPropertyChanged
 
         public IEnumerable<PropertyInfo> ObservedViewModelProperties(Type target)
         {
-            return target.SelectInstencePropertiesOf<INotifyPropertyChanged>();
+            return target.SelectInstencePropertiesOf<INotifyPropertyChanged>().Where(property => !property.PropertyType.IsAssignableFrom(typeof(INotifyCollectionChanged)));
         }
 
         private PropertyChangedHandler PropertyChangedHandlerForProperty(KeyValuePair<string, Dictionary<string, string[]>> entry)

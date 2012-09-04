@@ -30,6 +30,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             public decimal PublicDependentMethod() { return ProtectedDependentMethod(); }
             protected decimal ProtectedDependentMethod() { return NestedDependentMethod(); }
             private decimal NestedDependentMethod() { return AutoProperty; }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

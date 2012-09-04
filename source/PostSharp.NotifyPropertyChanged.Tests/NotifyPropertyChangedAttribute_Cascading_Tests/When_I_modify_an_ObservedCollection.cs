@@ -36,6 +36,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             public bool ObservingMethodCallCalculatedProperty { get { return ObservedCollection.Contains(2.0M); } }
             private int CalculateMethod() { return CalculatedProperty + 1; }
             protected int CalculatedProperty { get { return ObservedCollection.Count; } }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

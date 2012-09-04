@@ -27,6 +27,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
 
             public decimal AutoProperty { get; set; }
             public decimal DependentProperty { get { return AutoProperty; } }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }

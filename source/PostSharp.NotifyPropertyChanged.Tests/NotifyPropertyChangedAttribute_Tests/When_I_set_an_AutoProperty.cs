@@ -26,6 +26,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             public event PropertyChangedEventHandler PropertyChanged;
 
             public string AutoProperty { get; set; }
+
+            public void StopTheCompilerFromComplaining() { PropertyChanged(null, null); }
         }
     }
 }
