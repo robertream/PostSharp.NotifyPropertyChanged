@@ -19,8 +19,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
 
             observedCollection.Add(1.0M);
 
-            "it should only notify once that the ObservingProperty and the ObservingCalulatedProperty on the ObservingClass has changed"
-                .AssertThat(propertiesThatChanged, Is.EquivalentTo(new[] { "ObservingProperty", "ObservingCalculatedProperty" }));
+            "it should only notify once that ObservingProperty, ObservingCalulatedProperty and ObservingMethodCallCalculatedProperty on the ObservingClass have changed"
+                .AssertThat(propertiesThatChanged, Is.EquivalentTo(new[] { "ObservingProperty", "ObservingCalculatedProperty", "ObservingMethodCallCalculatedProperty" }));
         }
 
         [NotifyPropertyChanged]
@@ -32,9 +32,10 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             public ObservableCollection<decimal> ObservedCollection { get; set; }
 
             public decimal ObservingProperty { get { return ObservedCollection.Sum(); } }
-            public decimal ObservingCalculatedProperty { get { return CalculateMethod() + 1; } }
-            private decimal CalculateMethod() { return CalculatedProperty + 1; }
-            protected decimal CalculatedProperty { get { return ObservingProperty + 1; } }
+            public int ObservingCalculatedProperty { get { return CalculateMethod() + 1; } }
+            public bool ObservingMethodCallCalculatedProperty { get { return ObservedCollection.Contains(2.0M); } }
+            private int CalculateMethod() { return CalculatedProperty + 1; }
+            protected int CalculatedProperty { get { return ObservedCollection.Count; } }
         }
     }
 }
