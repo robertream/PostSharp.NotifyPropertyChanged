@@ -7,7 +7,7 @@ using NUnit.Framework;
 // ReSharper disable InconsistentNaming
 namespace PostSharp.NotifyPropertyChanged.Tests
 {
-    public static partial class NotifyPropertyChangedAttribute_Cascading_Tests
+    public static partial class NotifyObservedCollectionChangedAttribute_Tests
     {
         [Test]
         public static void When_I_modify_an_ObservedCollection()
@@ -24,7 +24,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         }
 
         [NotifyPropertyChanged]
-        [Cascadeing]
+        [NotifyObservedReferenceChanged]
+        [NotifyObservedCollectionChanged]
         public class CollectionObservingClass : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;

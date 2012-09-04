@@ -33,7 +33,7 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         }
 
         [NotifyPropertyChanged]
-        [Cascadeing]
+        [NotifyObservedReferenceChanged]
         public class ObservingClass : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
