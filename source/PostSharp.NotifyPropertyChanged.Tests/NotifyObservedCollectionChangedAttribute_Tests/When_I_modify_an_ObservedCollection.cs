@@ -13,14 +13,17 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         public static void When_I_modify_an_ObservedCollection()
         {
             var propertiesThatChanged = new List<string>();
-            var observedCollection = new ObservableCollection<decimal>();
-            var observingClass = new CollectionObservingClass { ObservedCollection = observedCollection };
+            var observingClass = new CollectionObservingClass();
+            var observedCollection = observingClass.ObservedCollection;
             observingClass.PropertyChanged += (@object, @event) => propertiesThatChanged.Add(@event.PropertyName);
 
             observedCollection.Add(1.0M);
 
             "it should only notify once that ObservingProperty, ObservingCalulatedProperty and ObservingMethodCallCalculatedProperty on the ObservingClass have changed"
                 .AssertThat(propertiesThatChanged, Is.EquivalentTo(new[] { "ObservingProperty", "ObservingCalculatedProperty", "ObservingMethodCallCalculatedProperty" }));
+
+            "it should update the backing field for the ObservedCollection property"
+                .AssertThat(observingClass.ObservingProperty, Is.EqualTo(observedCollection.Sum()));
         }
 
         [NotifyPropertyChanged]
@@ -28,6 +31,11 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         [NotifyObservedCollectionChanged]
         public class CollectionObservingClass : INotifyPropertyChanged
         {
+            public CollectionObservingClass()
+            {
+                ObservedCollection = new ObservableCollection<decimal>();
+            }
+
             public event PropertyChangedEventHandler PropertyChanged;
 
             public ObservableCollection<decimal> ObservedCollection { get; set; }

@@ -42,6 +42,7 @@ namespace PostSharp.NotifyPropertyChanged
                 oldInstance.PropertyChanged -= ObservedPropertyHandlers[args.LocationName].Invoke;
             if (newInstance != null)
                 newInstance.PropertyChanged += ObservedPropertyHandlers[args.LocationName].Invoke;
+            args.ProceedSetValue();
         }
 
         public IEnumerable<PropertyInfo> ObservedReferenceProperties(Type target)

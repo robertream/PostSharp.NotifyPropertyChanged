@@ -43,6 +43,7 @@ namespace PostSharp.NotifyPropertyChanged
                 oldInstance.CollectionChanged -= ObservedCollectionHandlers[args.LocationName];
             if (newInstance != null)
                 newInstance.CollectionChanged += ObservedCollectionHandlers[args.LocationName];
+            args.ProceedSetValue();
         }
 
         public IEnumerable<PropertyInfo> ObservedCollectionProperties(Type target)

@@ -11,14 +11,17 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         public static void When_I_set_an_ObservedProperty_on_an_ObservedReference()
         {
             var propertiesThatChanged = new List<string>();
-            var observedClass = new ObservedClass();
-            var observingClass = new ObservingClass { ObservedReference = observedClass, NonObservedReference = new ObservedClass() };
+            var observingClass = new ObservingClass();
+            var observedClass = observingClass.ObservedReference;
             observingClass.PropertyChanged += (@object, @event) => propertiesThatChanged.Add(@event.PropertyName);
 
             observedClass.ObservedProperty = 1.0M;
 
             "it should only notify once that the ObservingProperty and the ObservingCalulatedProperty on the ObservingClass has changed"
                 .AssertThat(propertiesThatChanged, Is.EquivalentTo(new[] { "ObservingProperty", "ObservingCalculatedProperty" }));
+
+            "it should update the backing field for the ObservedReference property"
+                .AssertThat(observingClass.ObservingProperty, Is.EqualTo(observedClass.ObservedProperty));
         }
 
         [NotifyPropertyChanged]
@@ -36,6 +39,12 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         [NotifyObservedReferenceChanged]
         public class ObservingClass : INotifyPropertyChanged
         {
+            public ObservingClass()
+            {
+                ObservedReference = new ObservedClass();
+                NonObservedReference = new ObservedClass();
+            }
+
             public event PropertyChangedEventHandler PropertyChanged;
 
             public ObservedClass ObservedReference { get; set; }
