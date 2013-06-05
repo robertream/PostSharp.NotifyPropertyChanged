@@ -10,5 +10,4 @@ namespace PostSharp.NotifyPropertyChanged.Tests
             return message;
         }
     }
-
 }

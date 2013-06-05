@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using NUnit.Framework;
@@ -12,10 +11,9 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         [Test]
         public static void When_I_modify_an_ObservedCollection()
         {
-            var propertiesThatChanged = new List<string>();
             var observingClass = new CollectionObservingClass();
             var observedCollection = observingClass.ObservedCollection;
-            observingClass.PropertyChanged += (@object, @event) => propertiesThatChanged.Add(@event.PropertyName);
+            var propertiesThatChanged = observingClass.ObservePropertyChanges();
 
             observedCollection.Add(1.0M);
 

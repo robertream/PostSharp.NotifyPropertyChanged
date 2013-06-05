@@ -1,21 +1,20 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using NUnit.Framework;
 
 // ReSharper disable InconsistentNaming
 namespace PostSharp.NotifyPropertyChanged.Tests
 {
-    public static partial class NotifyPropertyChangedAttribute_Cascading_Tests
+    public static partial class NotifyObservedReferenceChangedAttribute_Tests
     {
         [Test]
         public static void When_I_set_an_ObservedProperty_on_an_ObservedReference()
         {
-            var propertiesThatChanged = new List<string>();
             var observingClass = new ObservingClass();
             var observedClass = observingClass.ObservedReference;
-            observingClass.PropertyChanged += (@object, @event) => propertiesThatChanged.Add(@event.PropertyName);
+            var propertiesThatChanged = observingClass.ObservePropertyChanges();
 
             observedClass.ObservedProperty = 1.0M;
+            observedClass.NonObservedProperty = 1.0M;
 
             "it should only notify once that the ObservingProperty and the ObservingCalulatedProperty on the ObservingClass has changed"
                 .AssertThat(propertiesThatChanged, Is.EquivalentTo(new[] { "ObservingProperty", "ObservingCalculatedProperty" }));

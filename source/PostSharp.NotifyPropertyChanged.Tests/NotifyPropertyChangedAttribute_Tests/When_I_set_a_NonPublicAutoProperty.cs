@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using NUnit.Framework;
 
 // ReSharper disable InconsistentNaming
@@ -10,9 +9,8 @@ namespace PostSharp.NotifyPropertyChanged.Tests
         [Test]
         public static void When_I_set_a_NonPublicAutoProperty()
         {
-            var propertiesThatChanged = new List<string>();
             var notify = new NonPublicAutoProperty();
-            notify.PropertyChanged += (@object, @event) => propertiesThatChanged.Add(@event.PropertyName);
+            var propertiesThatChanged = notify.ObservePropertyChanges();
 
             notify.SetNonPublicAutoProperty();
 
