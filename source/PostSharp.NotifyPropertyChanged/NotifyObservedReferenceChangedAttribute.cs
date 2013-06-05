@@ -62,7 +62,9 @@ namespace PostSharp.NotifyPropertyChanged
 
             public void Invoke(object sender, PropertyChangedEventArgs eventArgs)
             {
-                NotifyChanges(Map[eventArgs.PropertyName], false);
+                string[] strings;
+                if (Map.TryGetValue(eventArgs.PropertyName, out strings))
+                    NotifyChanges(strings, false);
             }
         }
     }
